@@ -11,7 +11,7 @@ dp = Dispatcher(bot)
 
 @dp.message_handler(commands=['start'])
 async def start_command(message: types.Message):
-    await message.reply("Hello! Enter the your city and i'll send you info about weather")
+    await message.reply("Привет! Отправь мне название города")
 
 @dp.message_handler()
 async def get_weather(message: types.Message):
@@ -21,21 +21,18 @@ async def get_weather(message: types.Message):
         )
         data = r.json()
         city = data["name"]
-        cur_weather = data["main"]["temp"]
+        temp = data["main"]["temp"]
+        feelike = data["main"]["feels_like"]
         pressure = data["main"]["pressure"]
+        humidity = data["main"]["humidity"]
+        visibility = data["visibility"]
         wind = data["wind"]["speed"]
-        sunrise_tinestamp = datetime.datetime.fromtimestamp(data["sys"]["sunrise"])
-        sunset_tinestamp = datetime.datetime.fromtimestamp(data["sys"]["sunset"])
-        await message.reply(f"Weather in city: {message.text}\nTemperatur: {cur_weather}\n"
-            f"Давление: {pressure} мм.рт.ст\nВетер: {wind}\n"
-            f"Восход солнца: {sunrise_tinestamp}\n"
-            f"Закат солнца: {sunset_tinestamp}\n"
-            f"Have a nice day!"
-            )
 
+        await message.reply(f"Погода по городу {city.title()}:\nТемпература: {temp}°C, но чувствуется как {feelike}°C\nДавление: {pressure}, влажность: {humidity}\nВидимость: {visibility} метров\nСкорость ветра {wind}м/c")
     except:
         await message.reply('City is not defined')
 
-
 if __name__ == '__main__':
     executor.start_polling(dp)
+    
+
